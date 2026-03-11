@@ -3,8 +3,11 @@ package com.itheima.qiyeshixun.mapper;
 import com.itheima.qiyeshixun.po.SystemUser;
 import com.itheima.qiyeshixun.po.SystemUserExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 public interface SystemUserMapper {
     /**
@@ -95,7 +98,23 @@ public interface SystemUserMapper {
      */
     int updateByPrimaryKey(SystemUser row);
 
-    // 【新增】根据账号查询内部员工
+    // 根据账号查询内部员工
     @Select("SELECT * FROM system_user WHERE username = #{username} AND del_flag = 0 LIMIT 1")
     SystemUser selectByUsername(String username);
+
+    // 1. 查询所有未删除的员工
+    @Select("SELECT * FROM system_user WHERE del_flag = 0 ORDER BY id DESC")
+    List<SystemUser> selectAllUsers();
+
+    // 2. 新增员工 (补上 real_name 字段)
+    @Insert("INSERT INTO system_user(username, real_name, password, role, del_flag) VALUES(#{username}, #{realName}, #{password}, #{role}, 0)")
+    int insertUser(SystemUser user);
+
+    // 3. 修改员工信息 (补上 real_name 字段)
+    @Update("UPDATE system_user SET username = #{username}, real_name = #{realName}, role = #{role} WHERE id = #{id}")
+    int updateUser(SystemUser user);
+
+    // 4. 逻辑删除员工 (并不是真删，而是把 del_flag 改为 1)
+    @Update("UPDATE system_user SET del_flag = 1 WHERE id = #{id}")
+    int deleteUserById(Integer id);
 }

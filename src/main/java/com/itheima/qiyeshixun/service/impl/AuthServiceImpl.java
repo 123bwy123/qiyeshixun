@@ -1,5 +1,6 @@
 package com.itheima.qiyeshixun.service.impl;
 
+import cn.hutool.crypto.digest.BCrypt;
 import com.itheima.qiyeshixun.common.Result;
 import com.itheima.qiyeshixun.dto.LoginDTO;
 import com.itheima.qiyeshixun.mapper.CustomerMapper;
@@ -20,37 +21,33 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Result login(LoginDTO loginDTO) {
-        // 1. 获取前端发来的信息
         String role = loginDTO.getRole();
         String username = loginDTO.getUsername();
-        String encryptedPassword = loginDTO.getPassword(); // 这是前端SHA-256后的密文
+        String encryptedPassword = loginDTO.getPassword(); // 前端传来的 SHA-256 密文
 
-        // 2. 双表分流策略：如果是客户角色，查 customer 表
+        // 1. 客户登录逻辑
         if ("customer".equals(role)) {
             Customer customer = customerMapper.selectByMobile(username);
-
             if (customer == null) {
                 return Result.error("客户账号(手机号)不存在");
             }
-            if (!customer.getPassword().equals(encryptedPassword)) {
+            // 【核心修改】：使用 BCrypt.checkpw 进行密码比对 (参数1是明文/前端密文，参数2是数据库里的BCrypt密文)
+            if (!BCrypt.checkpw(encryptedPassword, customer.getPassword())) {
                 return Result.error("密码错误");
             }
-            return Result.success("客户身份验证成功！(暂未颁发Token)");
+            return Result.success("客户身份验证成功！准备进入客户主页...");
         }
-
-        // 3. 否则，都是内部角色，查 system_user 表
+        // 2. 内部员工登录逻辑 (咱们暂时还没写新增员工的接口，以后用到再说)
         else {
             SystemUser sysUser = systemUserMapper.selectByUsername(username);
             if (sysUser == null) {
                 return Result.error("员工账号不存在");
             }
-            if (!sysUser.getPassword().equals(encryptedPassword)) {
+            // 同样也要用 BCrypt 校验
+            if (!BCrypt.checkpw(encryptedPassword, sysUser.getPassword())) {
                 return Result.error("密码错误");
             }
-            // 这里可以加一段校验：前端选的角色，和数据库存的员工真实 role 是否匹配
-            // if(sysUser.getRole() != 匹配的枚举值) return error("角色不匹配");
-
-            return Result.success("内部员工身份验证成功！(暂未颁发Token)");
+            return Result.success("内部员工身份验证成功！准备进入工作台...");
         }
     }
 }
