@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
             if (!BCrypt.checkpw(encryptedPassword, customer.getPassword())) {
                 return Result.error("密码错误");
             }
-            return Result.success("客户登录成功");
+            return Result.success(customer.getId());
         }
 
         // 2. 内部员工登录逻辑
@@ -67,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
                 return Result.error("角色选择与实际职务不符，请确认您的角色！");
             }
 
-            return Result.success("员工登录成功");
+            return Result.success(sysUser.getId());
         }
     }
 }

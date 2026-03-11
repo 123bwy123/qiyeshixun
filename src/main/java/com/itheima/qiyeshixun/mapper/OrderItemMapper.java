@@ -3,6 +3,8 @@ package com.itheima.qiyeshixun.mapper;
 import com.itheima.qiyeshixun.po.OrderItem;
 import com.itheima.qiyeshixun.po.OrderItemExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 
 public interface OrderItemMapper {
@@ -93,4 +95,10 @@ public interface OrderItemMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(OrderItem row);
+
+    // 插入订单明细（这里咱们用原生的方式传参数，假设 order_item 表里有 order_id, product_id, quantity 字段）
+    @Insert("INSERT INTO order_item(order_id, product_id, quantity, create_time, update_time, del_flag) " +
+            "VALUES(#{orderId}, #{productId}, #{quantity}, NOW(), NOW(), 0)")
+    int insertOrderItem(@Param("orderId") Long orderId, @Param("productId") Long productId, @Param("quantity") Integer quantity);
+
 }

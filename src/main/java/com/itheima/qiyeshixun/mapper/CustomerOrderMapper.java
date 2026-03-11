@@ -2,8 +2,11 @@ package com.itheima.qiyeshixun.mapper;
 
 import com.itheima.qiyeshixun.po.CustomerOrder;
 import com.itheima.qiyeshixun.po.CustomerOrderExample;
+
+import java.math.BigDecimal;
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
+
+import org.apache.ibatis.annotations.*;
 
 public interface CustomerOrderMapper {
     /**
@@ -93,4 +96,22 @@ public interface CustomerOrderMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(CustomerOrder row);
+
+    // 将客户自己下的单插入数据库
+    @Insert("INSERT INTO customer_order " +
+            "(customer_id, operator_id, order_no, order_status, order_type, total_amount, require_date, receive_address, order_time, create_time, update_time, del_flag) " +
+            "VALUES " +
+            "(#{customerId}, #{operatorId}, #{orderNo}, #{orderStatus}, #{orderType}, #{totalAmount}, #{requireDate}, #{receiveAddress}, NOW(), NOW(), NOW(), 0)")
+    // 插入成功后，把 MySQL 自动生成的 ID 赋值给传入对象的 id 属性
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insertOrder(CustomerOrder customerOrder);
+
+
+    // 查询所有待客服审核的订单 (order_status = 0)
+    @Select("SELECT * FROM customer_order WHERE order_status = 0 AND del_flag = 0 ORDER BY create_time DESC")
+    List<CustomerOrder> selectPendingOrders();
+
+    // 客服审核通过，更新订单状态为 1 (可分配)
+    @Update("UPDATE customer_order SET order_status = 1, operator_id = #{operatorId}, total_amount = #{totalAmount}, update_time = NOW() WHERE id = #{id}")
+    int approveOrder(@Param("id") Long id, @Param("operatorId") Long operatorId, @Param("totalAmount") BigDecimal totalAmount);
 }
