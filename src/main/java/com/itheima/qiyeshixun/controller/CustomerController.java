@@ -1,17 +1,17 @@
 package com.itheima.qiyeshixun.controller;
 
 import com.itheima.qiyeshixun.common.Result;
+import com.itheima.qiyeshixun.dto.CustomerRegisterDTO;
 import com.itheima.qiyeshixun.po.Customer;
 import com.itheima.qiyeshixun.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController // 代表这个类下面所有接口返回的都是 JSON 格式数据
 @RequestMapping("/customer") // 这个 Controller 的统一路由前缀
+@CrossOrigin // 允许前端 Vue 在不同端口跨域请求后端
 public class CustomerController {
 
     @Autowired
@@ -27,5 +27,13 @@ public class CustomerController {
         List<Customer> list = customerService.getAllCustomers();
         // 2. 用我们之前写的 Result 包装一下返回给前端
         return Result.success(list);
+    }
+    /**
+     * 客户注册接口
+     * 路径: POST http://localhost:8080/customer/register
+     */
+    @PostMapping("/register")
+    public Result register(@RequestBody CustomerRegisterDTO registerDTO) {
+        return customerService.registerCustomer(registerDTO);
     }
 }

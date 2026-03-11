@@ -150,6 +150,8 @@ public class Customer {
      *
      * @mbg.generated
      */
+    private String password;
+
     public Long getId() {
         return id;
     }
@@ -436,6 +438,13 @@ public class Customer {
      *
      * @mbg.generated
      */
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -459,7 +468,8 @@ public class Customer {
             && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
-            && (this.getDelFlag() == null ? other.getDelFlag() == null : this.getDelFlag().equals(other.getDelFlag()));
+            && (this.getDelFlag() == null ? other.getDelFlag() == null : this.getDelFlag().equals(other.getDelFlag()))
+                && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()));
     }
 
     /**
@@ -484,6 +494,7 @@ public class Customer {
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         result = prime * result + ((getDelFlag() == null) ? 0 : getDelFlag().hashCode());
+        result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
         return result;
     }
 
@@ -511,6 +522,7 @@ public class Customer {
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", delFlag=").append(delFlag);
+        sb.append(", password=").append(password);
         sb.append("]");
         return sb.toString();
     }

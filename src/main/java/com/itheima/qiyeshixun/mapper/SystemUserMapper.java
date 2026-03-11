@@ -4,6 +4,7 @@ import com.itheima.qiyeshixun.po.SystemUser;
 import com.itheima.qiyeshixun.po.SystemUserExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface SystemUserMapper {
     /**
@@ -93,4 +94,8 @@ public interface SystemUserMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(SystemUser row);
+
+    // 【新增】根据账号查询内部员工
+    @Select("SELECT * FROM system_user WHERE username = #{username} AND del_flag = 0 LIMIT 1")
+    SystemUser selectByUsername(String username);
 }

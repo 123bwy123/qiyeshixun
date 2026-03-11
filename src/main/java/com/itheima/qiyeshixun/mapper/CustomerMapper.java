@@ -3,6 +3,8 @@ package com.itheima.qiyeshixun.mapper;
 import com.itheima.qiyeshixun.po.Customer;
 import com.itheima.qiyeshixun.po.CustomerExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -98,4 +100,11 @@ public interface CustomerMapper {
     // 查出所有未被逻辑删除的客户
     @Select("SELECT * FROM customer WHERE del_flag = 0")
     List<Customer> selectAllCustomers();
+    // 根据手机号查询未被删除的客户
+    @Select("SELECT * FROM customer WHERE mobile = #{mobile} AND del_flag = 0 LIMIT 1")
+    Customer selectByMobile(String mobile);
+    // 将客户数据插入数据库
+    @Insert("INSERT INTO customer(customer_name, mobile, id_card, password, address, del_flag, create_time, update_time) " +
+            "VALUES(#{customerName}, #{mobile}, #{idCard}, #{password}, #{address}, 0, NOW(), NOW())")
+    int insertCustomer(Customer customer);
 }
