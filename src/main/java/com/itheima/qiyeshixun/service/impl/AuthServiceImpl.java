@@ -19,11 +19,25 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private SystemUserMapper systemUserMapper;
 
+    // 辅助方法：将前端的英文字符串角色转换为数据库的数字类型
+    private Byte convertRoleStrToByte(String roleStr) {
+        switch (roleStr) {
+            case "admin": return 0;            // 系统管理员
+            case "service": return 1;          // 客服人员
+            case "dispatcher": return 2;       // 调度中心管理员
+            case "warehouse_admin": return 3;  // 库房管理员
+            case "courier": return 4;          // 配送员
+            case "station_admin": return 5;    // 分站管理员
+            case "center_admin": return 6;     // 配送中心管理员
+            case "finance_admin": return 7;    // 财务中心管理员
+            default: return -1;
+        }
+    }
     @Override
     public Result login(LoginDTO loginDTO) {
         String role = loginDTO.getRole();
         String username = loginDTO.getUsername();
-        String encryptedPassword = loginDTO.getPassword(); // 前端传来的 SHA-256 密文
+        String encryptedPassword = loginDTO.getPassword();
 
         // 1. 客户登录逻辑
         if ("customer".equals(role)) {
@@ -31,23 +45,29 @@ public class AuthServiceImpl implements AuthService {
             if (customer == null) {
                 return Result.error("客户账号(手机号)不存在");
             }
-            // 【核心修改】：使用 BCrypt.checkpw 进行密码比对 (参数1是明文/前端密文，参数2是数据库里的BCrypt密文)
             if (!BCrypt.checkpw(encryptedPassword, customer.getPassword())) {
                 return Result.error("密码错误");
             }
-            return Result.success("客户身份验证成功！准备进入客户主页...");
+            return Result.success("客户登录成功");
         }
-        // 2. 内部员工登录逻辑 (咱们暂时还没写新增员工的接口，以后用到再说)
+
+        // 2. 内部员工登录逻辑
         else {
             SystemUser sysUser = systemUserMapper.selectByUsername(username);
             if (sysUser == null) {
                 return Result.error("员工账号不存在");
             }
-            // 同样也要用 BCrypt 校验
             if (!BCrypt.checkpw(encryptedPassword, sysUser.getPassword())) {
                 return Result.error("密码错误");
             }
-            return Result.success("内部员工身份验证成功！准备进入工作台...");
+
+            // 【核心修复】：校验角色是否匹配！
+            Byte expectedRole = convertRoleStrToByte(role);
+            if (sysUser.getRole() == null || !sysUser.getRole().equals(expectedRole)) {
+                return Result.error("角色选择与实际职务不符，请确认您的角色！");
+            }
+
+            return Result.success("员工登录成功");
         }
     }
 }
