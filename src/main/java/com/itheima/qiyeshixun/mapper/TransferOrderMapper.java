@@ -3,7 +3,12 @@ package com.itheima.qiyeshixun.mapper;
 import com.itheima.qiyeshixun.po.TransferOrder;
 import com.itheima.qiyeshixun.po.TransferOrderExample;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 public interface TransferOrderMapper {
     /**
@@ -93,4 +98,26 @@ public interface TransferOrderMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(TransferOrder row);
+    // 插入调拨单 (初始状态 0-待中心库房出库)
+    @Insert("INSERT INTO transfer_order(transfer_no, order_id, out_warehouse_id, in_warehouse_id, transfer_status, create_time, update_time, del_flag) " +
+            "VALUES(#{transferNo}, #{orderId}, #{outWarehouseId}, #{inWarehouseId}, 0, NOW(), NOW(), 0)")
+    int insertTransferOrder(@Param("transferNo") String transferNo,
+                            @Param("orderId") Long orderId,
+                            @Param("outWarehouseId") Long outWarehouseId,
+                            @Param("inWarehouseId") Long inWarehouseId);
+    // 1. 查询待出库的调拨单 (联合 customer_order 表，把客户单号和地址也查出来，方便库房核对)
+    @Select("SELECT t.id, t.transfer_no as transferNo, t.order_id as orderId, c.order_no as customerOrderNo, c.receive_address as receiveAddress, t.create_time as createTime " +
+            "FROM transfer_order t " +
+            "LEFT JOIN customer_order c ON t.order_id = c.id " +
+            "WHERE t.transfer_status = 0 AND t.del_flag = 0 " +
+            "ORDER BY t.create_time ASC")
+    List<Map<String, Object>> selectPendingOutbound();
+
+    // 2. 核心操作：确认出库 (状态改为 1，记录出库人和时间)
+    @Update("UPDATE transfer_order SET transfer_status = 1, out_wh_admin_id = #{adminId}, out_time = NOW(), update_time = NOW() WHERE id = #{id}")
+    int confirmOutbound(@Param("id") Long id, @Param("adminId") Long adminId);
+
+    // 根据调拨单ID，查出它绑定的客户订单ID
+    @Select("SELECT order_id FROM transfer_order WHERE id = #{id}")
+    Long getOrderIdById(@Param("id") Long id);
 }

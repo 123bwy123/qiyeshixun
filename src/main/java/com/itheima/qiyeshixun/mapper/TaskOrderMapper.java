@@ -2,8 +2,15 @@ package com.itheima.qiyeshixun.mapper;
 
 import com.itheima.qiyeshixun.po.TaskOrder;
 import com.itheima.qiyeshixun.po.TaskOrderExample;
+
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 public interface TaskOrderMapper {
     /**
@@ -93,4 +100,24 @@ public interface TaskOrderMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(TaskOrder row);
+
+    // 插入任务单 (初始状态 0-待分配配送员，类型 1-正向配送)
+    @Insert("INSERT INTO task_order(task_no, order_id, station_id, task_status, task_type, settlement_amount, create_time, update_time, del_flag) " +
+            "VALUES(#{taskNo}, #{orderId}, #{stationId}, 0, 1, #{settlementAmount}, NOW(), NOW(), 0)")
+    int insertTaskOrder(@Param("taskNo") String taskNo,
+                        @Param("orderId") Long orderId,
+                        @Param("stationId") Long stationId,
+                        @Param("settlementAmount") BigDecimal settlementAmount);
+    // 1. 查询待分配小哥的任务单 (要求必须是分站已到货状态: c.order_status = 4)
+    @Select("SELECT t.id, t.task_no as taskNo, t.order_id as orderId, c.order_no as customerOrderNo, c.receive_address as receiveAddress, t.create_time as createTime " +
+            "FROM task_order t " +
+            "LEFT JOIN customer_order c ON t.order_id = c.id " +
+            // 【核心修复】：增加 c.order_status = 4 的限制
+            "WHERE t.task_status = 0 AND c.order_status = 4 AND t.del_flag = 0 " +
+            "ORDER BY t.create_time ASC")
+    List<Map<String, Object>> selectPendingTasks();
+
+    // 2. 站长分配小哥 (状态改为 1-派送中，记录小哥ID和站长ID)
+    @Update("UPDATE task_order SET task_status = 1, courier_id = #{courierId}, station_admin_id = #{adminId}, assign_time = NOW(), update_time = NOW() WHERE id = #{id}")
+    int assignCourier(@Param("id") Long id, @Param("courierId") Long courierId, @Param("adminId") Long adminId);
 }

@@ -25,7 +25,10 @@ public class AuthServiceImpl implements AuthService {
             case "admin": return 0;            // 系统管理员
             case "service": return 1;          // 客服人员
             case "dispatcher": return 2;       // 调度中心管理员
-            case "warehouse_admin": return 3;  // 库房管理员
+            // 👇 --- 【核心修复：一分为二的库房字典】 --- 👇
+            case "center_warehouse": return 3; // 中心库房管理员
+            case "station_warehouse": return 8; // 分站库房管理员
+            // 👆 ------------------------------------- 👆
             case "courier": return 4;          // 配送员
             case "station_admin": return 5;    // 分站管理员
             case "center_admin": return 6;     // 配送中心管理员
@@ -33,6 +36,7 @@ public class AuthServiceImpl implements AuthService {
             default: return -1;
         }
     }
+
     @Override
     public Result login(LoginDTO loginDTO) {
         String role = loginDTO.getRole();
@@ -61,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
                 return Result.error("密码错误");
             }
 
-            // 【核心修复】：校验角色是否匹配！
+            // 【校验角色是否匹配！】
             Byte expectedRole = convertRoleStrToByte(role);
             if (sysUser.getRole() == null || !sysUser.getRole().equals(expectedRole)) {
                 return Result.error("角色选择与实际职务不符，请确认您的角色！");
