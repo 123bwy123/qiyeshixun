@@ -1,0 +1,15 @@
+=============== USERS ===============
+{id=1, username=21230224, real_name=于行, role=1}
+{id=2, username=admin, real_name=bobby, role=0}
+{id=3, username=21230204, real_name=殷嘉怿, role=2}
+{id=4, username=21230101, real_name=科比布莱恩特, role=3}
+{id=5, username=21230102, real_name=王宝强, role=5}
+{id=6, username=21230103, real_name=小分库, role=8}
+{id=7, username=21230104, real_name=小分站, role=5}
+{id=8, username=21230105, real_name=快递小哥, role=4}
+{id=9, username=21230106, real_name=小配员, role=4}
+{id=10, username=21230107, real_name=小配中, role=6}
+{id=11, username=21230108, real_name=海尔集团, role=9}
+{id=12, username=21230109, real_name=小财, role=7}
+{id=13, username=21230110, real_name=小中库, role=3}
+=============== WAREHOUSES ===============

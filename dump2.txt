@@ -1,0 +1,44 @@
+=============== TRANSFER ORDERS ===============
+{id=18, transfer_no=DB2032019787097546752, order_id=24, out_warehouse_id=1, in_warehouse_id=5, out_wh_admin_id=13, in_wh_admin_id=null, transfer_status=1, out_time=2026-03-12T17:04:33, in_time=null, create_time=2026-03-12T17:04:05, update_time=2026-03-12T17:04:33, del_flag=0}
+{id=17, transfer_no=DB2032015571159252992, order_id=23, out_warehouse_id=1, in_warehouse_id=5, out_wh_admin_id=13, in_wh_admin_id=null, transfer_status=1, out_time=2026-03-12T16:48:41, in_time=null, create_time=2026-03-12T16:47:19, update_time=2026-03-12T16:48:41, del_flag=0}
+{id=16, transfer_no=DB2032009954998808576, order_id=22, out_warehouse_id=1, in_warehouse_id=5, out_wh_admin_id=13, in_wh_admin_id=null, transfer_status=1, out_time=2026-03-12T16:25:49, in_time=null, create_time=2026-03-12T16:25, update_time=2026-03-12T16:25:49, del_flag=0}
+{id=15, transfer_no=DB2032002921482412032, order_id=21, out_warehouse_id=1, in_warehouse_id=5, out_wh_admin_id=13, in_wh_admin_id=null, transfer_status=1, out_time=2026-03-12T15:59:43, in_time=null, create_time=2026-03-12T15:57:03, update_time=2026-03-12T15:59:43, del_flag=0}
+{id=14, transfer_no=DB2031996340833247232, order_id=20, out_warehouse_id=1, in_warehouse_id=5, out_wh_admin_id=13, in_wh_admin_id=null, transfer_status=1, out_time=2026-03-12T15:54:47, in_time=null, create_time=2026-03-12T15:30:54, update_time=2026-03-12T15:54:47, del_flag=0}
+{id=13, transfer_no=DB2031996317714243584, order_id=19, out_warehouse_id=1, in_warehouse_id=5, out_wh_admin_id=13, in_wh_admin_id=null, transfer_status=1, out_time=2026-03-12T15:53:52, in_time=null, create_time=2026-03-12T15:30:49, update_time=2026-03-12T15:53:52, del_flag=0}
+{id=12, transfer_no=DB2031981457030922240, order_id=15, out_warehouse_id=1, in_warehouse_id=5, out_wh_admin_id=13, in_wh_admin_id=null, transfer_status=1, out_time=2026-03-12T15:54:10, in_time=null, create_time=2026-03-12T14:31:46, update_time=2026-03-12T15:54:10, del_flag=0}
+{id=11, transfer_no=DB2031968536997548032, order_id=3, out_warehouse_id=1, in_warehouse_id=7, out_wh_admin_id=null, in_wh_admin_id=null, transfer_status=0, out_time=null, in_time=null, create_time=2026-03-12T13:40:26, update_time=2026-03-12T13:40:26, del_flag=0}
+{id=10, transfer_no=DB2031968336073609216, order_id=13, out_warehouse_id=1, in_warehouse_id=5, out_wh_admin_id=null, in_wh_admin_id=null, transfer_status=0, out_time=null, in_time=null, create_time=2026-03-12T13:39:38, update_time=2026-03-12T13:39:38, del_flag=0}
+{id=9, transfer_no=DB2031967920069955584, order_id=14, out_warehouse_id=1, in_warehouse_id=5, out_wh_admin_id=null, in_wh_admin_id=null, transfer_status=0, out_time=null, in_time=null, create_time=2026-03-12T13:37:58, update_time=2026-03-12T13:37:58, del_flag=0}
+=============== INSPECTION ORDERS ===============
+{id=7, inspection_no=IN1773306273939323D, transfer_id=18, station_id=5, admin_id=13, inspection_status=0, create_time=2026-03-12T17:04:33, update_time=2026-03-12T17:04:33, del_flag=0}
+{id=6, inspection_no=IN17733053216784796, transfer_id=17, station_id=5, admin_id=13, inspection_status=0, create_time=2026-03-12T16:48:41, update_time=2026-03-12T16:48:41, del_flag=0}
+{id=5, inspection_no=IN17733039493501182, transfer_id=16, station_id=5, admin_id=13, inspection_status=0, create_time=2026-03-12T16:25:49, update_time=2026-03-12T16:25:49, del_flag=0}
+{id=4, inspection_no=IN1773302383192839A, transfer_id=15, station_id=5, admin_id=13, inspection_status=0, create_time=2026-03-12T15:59:43, update_time=2026-03-12T15:59:43, del_flag=0}
+{id=3, inspection_no=IN177330208785782BD, transfer_id=14, station_id=5, admin_id=13, inspection_status=0, create_time=2026-03-12T15:54:47, update_time=2026-03-12T15:54:47, del_flag=0}
+{id=2, inspection_no=IN17733020503263A91, transfer_id=12, station_id=5, admin_id=13, inspection_status=0, create_time=2026-03-12T15:54:10, update_time=2026-03-12T15:54:10, del_flag=0}
+{id=1, inspection_no=IN177330203255850CF, transfer_id=13, station_id=5, admin_id=13, inspection_status=1, create_time=2026-03-12T15:53:52, update_time=2026-03-12T16:32:14, del_flag=0}
+=============== TASK ORDERS ===============
+{id=18, task_no=RW2032019787089158144, order_id=24, station_id=5, courier_id=null, station_admin_id=null, task_status=0, task_type=1, settlement_amount=4999.00, assign_time=null, finish_time=null, remark=null, create_time=2026-03-12T17:04:05, update_time=2026-03-12T17:04:05, del_flag=0}
+{id=17, task_no=RW2032015571146670080, order_id=23, station_id=5, courier_id=null, station_admin_id=null, task_status=0, task_type=1, settlement_amount=20.00, assign_time=null, finish_time=null, remark=null, create_time=2026-03-12T16:47:19, update_time=2026-03-12T16:47:19, del_flag=0}
+{id=16, task_no=RW2032009954982031360, order_id=22, station_id=5, courier_id=8, station_admin_id=5, task_status=1, task_type=1, settlement_amount=50.00, assign_time=2026-03-12T16:26:51, finish_time=null, remark=null, create_time=2026-03-12T16:25, update_time=2026-03-12T16:26:51, del_flag=0}
+{id=15, task_no=RW2032002921474023424, order_id=21, station_id=5, courier_id=8, station_admin_id=5, task_status=2, task_type=1, settlement_amount=500.00, assign_time=2026-03-12T15:58:02, finish_time=2026-03-12T15:58:49, remark=null, create_time=2026-03-12T15:57:03, update_time=2026-03-12T15:58:49, del_flag=0}
+{id=14, task_no=RW2031996340824858624, order_id=20, station_id=5, courier_id=8, station_admin_id=5, task_status=2, task_type=1, settlement_amount=120.00, assign_time=2026-03-12T15:31:41, finish_time=2026-03-12T15:32:59, remark=null, create_time=2026-03-12T15:30:54, update_time=2026-03-12T15:32:59, del_flag=0}
+{id=13, task_no=RW2031996317701660672, order_id=19, station_id=5, courier_id=8, station_admin_id=5, task_status=2, task_type=1, settlement_amount=60.00, assign_time=2026-03-12T15:31:47, finish_time=2026-03-12T15:32:52, remark=null, create_time=2026-03-12T15:30:49, update_time=2026-03-12T15:32:52, del_flag=0}
+{id=12, task_no=RW2031981457014145024, order_id=15, station_id=5, courier_id=8, station_admin_id=5, task_status=1, task_type=1, settlement_amount=60000.00, assign_time=2026-03-12T14:33:48, finish_time=null, remark=null, create_time=2026-03-12T14:31:46, update_time=2026-03-12T14:33:48, del_flag=0}
+{id=11, task_no=RW2031968536989159424, order_id=3, station_id=7, courier_id=8, station_admin_id=7, task_status=2, task_type=1, settlement_amount=40.00, assign_time=2026-03-12T13:41:55, finish_time=2026-03-12T13:47:43, remark=, create_time=2026-03-12T13:40:26, update_time=2026-03-12T13:47:43, del_flag=0}
+{id=10, task_no=RW2031968336061026304, order_id=13, station_id=5, courier_id=8, station_admin_id=5, task_status=1, task_type=1, settlement_amount=-2999.00, assign_time=2026-03-12T16:40:29, finish_time=null, remark=null, create_time=2026-03-12T13:39:38, update_time=2026-03-12T16:40:29, del_flag=0}
+{id=9, task_no=RW2031967920048984064, order_id=14, station_id=5, courier_id=8, station_admin_id=5, task_status=1, task_type=1, settlement_amount=8997.00, assign_time=2026-03-12T16:41:38, finish_time=null, remark=null, create_time=2026-03-12T13:37:58, update_time=2026-03-12T16:41:38, del_flag=0}
+=============== SYSTEM USERS ===============
+{id=1, username=21230224, real_name=于行, role=1}
+{id=2, username=admin, real_name=bobby, role=0}
+{id=3, username=21230204, real_name=殷嘉怿, role=2}
+{id=4, username=21230101, real_name=科比布莱恩特, role=3}
+{id=5, username=21230102, real_name=王宝强, role=5}
+{id=6, username=21230103, real_name=小分库, role=8}
+{id=7, username=21230104, real_name=小分站, role=5}
+{id=8, username=21230105, real_name=快递小哥, role=4}
+{id=9, username=21230106, real_name=小配员, role=4}
+{id=10, username=21230107, real_name=小配中, role=6}
+{id=11, username=21230108, real_name=海尔集团, role=9}
+{id=12, username=21230109, real_name=小财, role=7}
+{id=13, username=21230110, real_name=小中库, role=3}

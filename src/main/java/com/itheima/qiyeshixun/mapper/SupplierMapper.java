@@ -109,4 +109,17 @@ public interface SupplierMapper {
     // 供应商发货：把采购单状态改成 2 (运输中)
     @Update("UPDATE purchase_order SET status = 2, update_time = NOW() WHERE id = #{orderId}")
     int dispatchOrder(Long orderId);
+
+    // 根据名称查询供应商 (用于唯一性校验)
+    @Select("SELECT * FROM supplier WHERE supplier_name = #{name} AND del_flag = 0 LIMIT 1")
+    Supplier selectByName(@Param("name") String name);
+
+    // 分页+模糊搜索供应商列表
+    @Select("<script>" +
+            "SELECT * FROM supplier " +
+            "WHERE del_flag = 0 " +
+            "<if test='name != null and name != \"\"'>AND supplier_name LIKE CONCAT('%', #{name}, '%')</if> " +
+            "ORDER BY create_time DESC" +
+            "</script>")
+    List<Supplier> searchSuppliers(@Param("name") String name);
 }

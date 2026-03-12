@@ -3,8 +3,9 @@ import com.itheima.qiyeshixun.common.Result;
 import com.itheima.qiyeshixun.po.SystemUser;
 
 public interface SystemUserService {
-    Result getUserList();
-    Result addUser(SystemUser user);
-    Result updateUser(SystemUser user);
-    Result deleteUser(Integer id);
+    Result<java.util.List<SystemUser>> getUserList();
+    Result<Object> addUser(SystemUser user);
+    Result<String> updateUser(SystemUser user);
+    Result<String> deleteUser(Long id);
+    Result<String> assignRoles(Long userId, java.util.List<Long> roleIds);
 }

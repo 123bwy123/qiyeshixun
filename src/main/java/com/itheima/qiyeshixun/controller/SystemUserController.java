@@ -15,14 +15,19 @@ public class SystemUserController {
     private SystemUserService systemUserService;
 
     @GetMapping("/list")
-    public Result getList() { return systemUserService.getUserList(); }
+    public Result<java.util.List<SystemUser>> getList() { return systemUserService.getUserList(); }
 
     @PostMapping("/add")
-    public Result add(@RequestBody SystemUser user) { return systemUserService.addUser(user); }
+    public Result<Object> add(@RequestBody SystemUser user) { return systemUserService.addUser(user); }
 
     @PutMapping("/update")
-    public Result update(@RequestBody SystemUser user) { return systemUserService.updateUser(user); }
+    public Result<String> update(@RequestBody SystemUser user) { return systemUserService.updateUser(user); }
 
     @DeleteMapping("/delete/{id}")
-    public Result delete(@PathVariable Integer id) { return systemUserService.deleteUser(id); }
+    public Result<String> delete(@PathVariable Long id) { return systemUserService.deleteUser(id); }
+
+    @PostMapping("/assignRoles")
+    public Result<String> assignRoles(@RequestParam Long userId, @RequestBody java.util.List<Long> roleIds) {
+        return systemUserService.assignRoles(userId, roleIds);
+    }
 }

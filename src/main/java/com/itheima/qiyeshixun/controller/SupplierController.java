@@ -1,28 +1,69 @@
 package com.itheima.qiyeshixun.controller;
 
 import com.itheima.qiyeshixun.common.Result;
-import com.itheima.qiyeshixun.mapper.SupplierMapper;
+import com.itheima.qiyeshixun.po.Supplier;
+import com.itheima.qiyeshixun.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin/supplier")
-@CrossOrigin // 解决你刚才报的 CORS 跨域问题
+@CrossOrigin
 public class SupplierController {
 
     @Autowired
-    private SupplierMapper supplierMapper;
+    private SupplierService supplierService;
 
-    // 拉取待发货的采购单大屏数据
-    @GetMapping("/pending")
-    public Result getPending() {
-        return Result.success(supplierMapper.selectPendingDispatchOrders());
+    /**
+     * 综合查询/分页查询供应商
+     */
+    @GetMapping("/list")
+    public Result<List<Supplier>> list(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false) String name) {
+        return supplierService.getSupplierPage(pageNum, pageSize, name);
     }
 
-    // 确认发货（状态变为2）
+    /**
+     * 新增供应商
+     */
+    @PostMapping("/save")
+    public Result<String> save(@RequestBody Supplier supplier) {
+        return supplierService.saveSupplier(supplier);
+    }
+
+    /**
+     * 修改供应商
+     */
+    @PutMapping("/update")
+    public Result<String> update(@RequestBody Supplier supplier) {
+        return supplierService.updateSupplier(supplier);
+    }
+
+    /**
+     * 删除供应商 (带关联检查)
+     */
+    @DeleteMapping("/delete/{id}")
+    public Result<String> delete(@PathVariable Long id) {
+        return supplierService.deleteSupplier(id);
+    }
+
+    /**
+     * 【供应商专属】拉取待发货采购单
+     */
+    @GetMapping("/pending")
+    public Result<List<java.util.Map<String, Object>>> getPending() {
+        return supplierService.getPendingDispatchOrders();
+    }
+
+    /**
+     * 【供应商专属】执行发货装车
+     */
     @PostMapping("/dispatch")
-    public Result dispatch(@RequestParam Long orderId) {
-        supplierMapper.dispatchOrder(orderId);
-        return Result.success("发货成功！货车已在途，预计明日抵达中心库房。");
+    public Result<String> dispatch(@RequestParam Long orderId) {
+        return supplierService.dispatchOrder(orderId);
     }
 }

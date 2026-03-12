@@ -3,7 +3,10 @@ package com.itheima.qiyeshixun.mapper;
 import com.itheima.qiyeshixun.po.Product;
 import com.itheima.qiyeshixun.po.ProductExample;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface ProductMapper {
     /**
@@ -93,4 +96,19 @@ public interface ProductMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Product row);
+
+    // 查询可售商品列表（联表查库存总量）
+    @Select("SELECT p.id, p.product_name as productName, p.product_code as productCode, p.price, " +
+            "p.stock_unit as stockUnit, COALESCE(SUM(i.stock_quantity), 0) as totalStock " +
+            "FROM product p LEFT JOIN inventory i ON p.id = i.product_id AND i.del_flag = 0 " +
+            "WHERE p.del_flag = 0 GROUP BY p.id ORDER BY p.product_name")
+    List<Map<String, Object>> selectAvailableProducts();
+
+    // 按名称模糊搜索可售商品（联表查库存总量）
+    @Select("SELECT p.id, p.product_name as productName, p.product_code as productCode, p.price, " +
+            "p.stock_unit as stockUnit, COALESCE(SUM(i.stock_quantity), 0) as totalStock " +
+            "FROM product p LEFT JOIN inventory i ON p.id = i.product_id AND i.del_flag = 0 " +
+            "WHERE p.del_flag = 0 AND p.product_name LIKE CONCAT('%', #{keyword}, '%') " +
+            "GROUP BY p.id ORDER BY p.product_name")
+    List<Map<String, Object>> searchAvailableProducts(@Param("keyword") String keyword);
 }

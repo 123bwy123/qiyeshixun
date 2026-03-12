@@ -107,19 +107,28 @@ public interface SystemUserMapper {
     @Select("SELECT * FROM system_user WHERE del_flag = 0 ORDER BY id DESC")
     List<SystemUser> selectAllUsers();
 
-    // 2. 新增员工 (补上 real_name 字段)
+    // 2. 新增员工 (补上 real_name 字段，同步插入 role 以供旧登录逻辑使用)
     @Insert("INSERT INTO system_user(username, real_name, password, role, del_flag) VALUES(#{username}, #{realName}, #{password}, #{role}, 0)")
+    @org.apache.ibatis.annotations.Options(useGeneratedKeys = true, keyProperty = "id")
     int insertUser(SystemUser user);
 
-    // 3. 修改员工信息 (补上 real_name 字段)
+    // 3. 修改员工信息 (同步更新 role 字段)
     @Update("UPDATE system_user SET username = #{username}, real_name = #{realName}, role = #{role} WHERE id = #{id}")
     int updateUser(SystemUser user);
 
+    // 5. 专门用于同步 RBAC 角色到旧 role 字段
+    @Update("UPDATE system_user SET role = #{role} WHERE id = #{id}")
+    int updateLegacyRole(@Param("id") Long id, @Param("role") Byte role);
+
     // 4. 逻辑删除员工 (并不是真删，而是把 del_flag 改为 1)
     @Update("UPDATE system_user SET del_flag = 1 WHERE id = #{id}")
-    int deleteUserById(Integer id);
+    int deleteUserById(Long id);
 
     // 查询系统中所有真实存在的快递小哥 (role = 4)
     @Select("SELECT id, real_name as realName, phone FROM system_user WHERE role = 4 AND del_flag = 0")
     List<Map<String, Object>> selectAllCouriers();
+
+    // 查询所有分站管理员 (role = 5)，供调度员选择分站
+    @Select("SELECT id, real_name as realName, username FROM system_user WHERE role = 5 AND del_flag = 0")
+    List<Map<String, Object>> selectStationAdmins();
 }

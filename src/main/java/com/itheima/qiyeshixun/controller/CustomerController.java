@@ -1,6 +1,8 @@
 package com.itheima.qiyeshixun.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.itheima.qiyeshixun.common.Result;
+import com.itheima.qiyeshixun.dto.CustomerOrderDetailDTO;
 import com.itheima.qiyeshixun.dto.CustomerRegisterDTO;
 import com.itheima.qiyeshixun.po.Customer;
 import com.itheima.qiyeshixun.service.CustomerService;
@@ -9,28 +11,63 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController // 代表这个类下面所有接口返回的都是 JSON 格式数据
-@RequestMapping("/customer") // 这个 Controller 的统一路由前缀
-@CrossOrigin // 允许前端 Vue 在不同端口跨域请求后端
+@RestController
+@RequestMapping("/customer")
+@CrossOrigin
 public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
 
     /**
-     * 查询所有客户接口
-     * 浏览器访问地址: http://localhost:8080/customer/list
+     * 分页查询客户列表
      */
     @GetMapping("/list")
-    public Result<List<Customer>> list() {
-        // 1. 调 Service 拿数据
-        List<Customer> list = customerService.getAllCustomers();
-        // 2. 用我们之前写的 Result 包装一下返回给前端
+    public Result<PageInfo<Customer>> list(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String idCard,
+            @RequestParam(required = false) String mobile) {
+        PageInfo<Customer> pageInfo = customerService.findPage(page, size, name, idCard, mobile);
+        return Result.success(pageInfo);
+    }
+
+    /**
+     * 新增客户
+     */
+    @PostMapping("/add")
+    public Result add(@RequestBody Customer customer) {
+        return customerService.add(customer);
+    }
+
+    /**
+     * 修改客户
+     */
+    @PutMapping("/update")
+    public Result update(@RequestBody Customer customer) {
+        return customerService.update(customer);
+    }
+
+    /**
+     * 删除客户
+     */
+    @DeleteMapping("/{id}")
+    public Result delete(@PathVariable Long id) {
+        return customerService.delete(id);
+    }
+
+    /**
+     * 查询客户订单明细
+     */
+    @GetMapping("/orders/{customerId}")
+    public Result<List<CustomerOrderDetailDTO>> getOrders(@PathVariable Long customerId) {
+        List<CustomerOrderDetailDTO> list = customerService.getOrders(customerId);
         return Result.success(list);
     }
+
     /**
-     * 客户注册接口
-     * 路径: POST http://localhost:8080/customer/register
+     * 客户注册接口 (保留)
      */
     @PostMapping("/register")
     public Result register(@RequestBody CustomerRegisterDTO registerDTO) {

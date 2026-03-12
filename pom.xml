@@ -176,7 +176,7 @@
                         </exclude>
                     </excludes>
                     <!-- 可执行jar的主类（需替换为你的项目主类全路径） -->
-                    <mainClass>com.itheima.qiYeShiXun.QiYeShiXunApplication</mainClass>
+                    <mainClass>com.itheima.qiyeshixun.QiYeShiXunApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
