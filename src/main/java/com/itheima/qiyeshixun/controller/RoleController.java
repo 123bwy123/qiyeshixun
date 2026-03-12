@@ -1,5 +1,6 @@
 package com.itheima.qiyeshixun.controller;
 
+import com.itheima.qiyeshixun.common.annotation.Log;
 import com.itheima.qiyeshixun.common.Result;
 import com.itheima.qiyeshixun.po.SysRole;
 import com.itheima.qiyeshixun.service.SysRoleService;
@@ -21,23 +22,21 @@ public class RoleController {
         return sysRoleService.getRoleList();
     }
 
-    @PostMapping("/save")
-    public Result<String> save(@RequestBody SysRole role) {
-        return sysRoleService.saveRole(role);
-    }
+    @PostMapping("/add")
+    @Log(module = "权限管理", operation = "新增角色")
+    public Result<String> add(@RequestBody SysRole role) { return sysRoleService.saveRole(role); }
 
     @PutMapping("/update")
-    public Result<String> update(@RequestBody SysRole role) {
-        return sysRoleService.updateRole(role);
-    }
+    @Log(module = "权限管理", operation = "修改角色")
+    public Result<String> update(@RequestBody SysRole role) { return sysRoleService.updateRole(role); }
 
     @DeleteMapping("/delete/{id}")
-    public Result<String> delete(@PathVariable Long id) {
-        return sysRoleService.deleteRole(id);
-    }
+    @Log(module = "权限管理", operation = "删除角色")
+    public Result<String> delete(@PathVariable Long id) { return sysRoleService.deleteRole(id); }
 
-    @PostMapping("/assign")
-    public Result<String> assignPermissions(@RequestParam Long roleId, @RequestBody List<Long> permIds) {
-        return sysRoleService.assignPermissions(roleId, permIds);
+    @PostMapping("/assignPermissions")
+    @Log(module = "权限管理", operation = "分配角色菜单权限")
+    public Result<String> assignPermissions(@RequestParam Long roleId, @RequestBody java.util.List<Long> permissionIds) {
+        return sysRoleService.assignPermissions(roleId, permissionIds);
     }
 }
