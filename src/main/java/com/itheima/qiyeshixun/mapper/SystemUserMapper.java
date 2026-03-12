@@ -3,6 +3,7 @@ package com.itheima.qiyeshixun.mapper;
 import com.itheima.qiyeshixun.po.SystemUser;
 import com.itheima.qiyeshixun.po.SystemUserExample;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -117,4 +118,8 @@ public interface SystemUserMapper {
     // 4. 逻辑删除员工 (并不是真删，而是把 del_flag 改为 1)
     @Update("UPDATE system_user SET del_flag = 1 WHERE id = #{id}")
     int deleteUserById(Integer id);
+
+    // 查询系统中所有真实存在的快递小哥 (role = 4)
+    @Select("SELECT id, real_name as realName, phone FROM system_user WHERE role = 4 AND del_flag = 0")
+    List<Map<String, Object>> selectAllCouriers();
 }

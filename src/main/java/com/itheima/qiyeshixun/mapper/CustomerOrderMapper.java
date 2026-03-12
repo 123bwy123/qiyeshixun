@@ -92,4 +92,8 @@ public interface CustomerOrderMapper {
     // 4. 分站库房把货交给小哥，状态变 6 (已领货)
     @Update("UPDATE customer_order SET order_status = 6, update_time = NOW() WHERE id = #{id}")
     int updateStatusToCourierPicked(@Param("id") Long id);
+
+    // 站长结单，主订单彻底完结，状态变 7 (已完成)！
+    @Update("UPDATE customer_order SET order_status = 7, update_time = NOW() WHERE id = #{id}")
+    int updateStatusToFinished(@Param("id") Long id);
 }

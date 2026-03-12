@@ -120,4 +120,35 @@ public interface TaskOrderMapper {
     // 2. 站长分配小哥 (状态改为 1-派送中，记录小哥ID和站长ID)
     @Update("UPDATE task_order SET task_status = 1, courier_id = #{courierId}, station_admin_id = #{adminId}, assign_time = NOW(), update_time = NOW() WHERE id = #{id}")
     int assignCourier(@Param("id") Long id, @Param("courierId") Long courierId, @Param("adminId") Long adminId);
+
+    // ================= 配送员(快递小哥)专属 SQL =================
+
+    // 1. 查询小哥自己名下【正在派送中 (task_status = 1)】的任务
+    // 连表 customer_order，把收货地址和要收的钱款查出来！
+    @Select("SELECT t.id as taskId, t.task_no as taskNo, c.order_no as customerOrderNo, c.receive_address as receiveAddress, c.total_amount as totalAmount, t.create_time as assignTime " +
+            "FROM task_order t " +
+            "LEFT JOIN customer_order c ON t.order_id = c.id " +
+            "WHERE t.courier_id = #{courierId} AND t.task_status = 1 AND t.del_flag = 0 " +
+            "ORDER BY t.assign_time DESC")
+    List<Map<String, Object>> selectMyDeliveringTasks(@Param("courierId") Long courierId);
+
+    // 2. 小哥确认送达，将任务单状态改为 2 (已送达/待站长结单)，并记录完成时间
+    @Update("UPDATE task_order SET task_status = 2, finish_time = NOW(), update_time = NOW() WHERE id = #{taskId}")
+    int completeDeliveryTask(@Param("taskId") Long taskId);
+
+    // 站长派单：绑定真实的快递小哥ID，并将任务状态改为 1 (派送中)
+    @Update("UPDATE task_order SET courier_id = #{courierId}, task_status = 1, update_time = NOW() WHERE id = #{taskId}")
+    int assignTaskToCourier(@Param("taskId") Long taskId, @Param("courierId") Long courierId);
+
+    // 查询小哥送完回来的、等待站长结单的任务 (task_status = 2)
+    @Select("SELECT t.id as taskId, t.order_id as orderId, t.task_no as taskNo, c.order_no as customerOrderNo, c.total_amount as totalAmount, u.real_name as courierName " +
+            "FROM task_order t " +
+            "LEFT JOIN customer_order c ON t.order_id = c.id " +
+            "LEFT JOIN system_user u ON t.courier_id = u.id " +
+            "WHERE t.task_status = 2 AND t.del_flag = 0")
+    List<Map<String, Object>> selectPendingCloseTasks();
+
+    // 站长结单后，把任务单彻底完结 (设为 3)
+    @Update("UPDATE task_order SET task_status = 3, update_time = NOW() WHERE id = #{taskId}")
+    int closeTaskStatus(@Param("taskId") Long taskId);
 }

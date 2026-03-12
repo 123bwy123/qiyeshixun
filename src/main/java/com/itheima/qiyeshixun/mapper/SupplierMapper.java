@@ -3,7 +3,11 @@ package com.itheima.qiyeshixun.mapper;
 import com.itheima.qiyeshixun.po.Supplier;
 import com.itheima.qiyeshixun.po.SupplierExample;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 public interface SupplierMapper {
     /**
@@ -93,4 +97,16 @@ public interface SupplierMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Supplier row);
+    // 联表查询：查出状态为 1 (待发货) 的采购单，并且带上供应商名字
+    @Select("SELECT po.id as orderId, po.purchase_no as purchaseNo, po.total_amount as totalAmount, " +
+            "po.purchase_date as purchaseDate, s.supplier_name as supplierName " +
+            "FROM purchase_order po " +
+            "LEFT JOIN supplier s ON po.supplier_id = s.id " +
+            "WHERE po.status = 1 AND po.del_flag = 0 " +
+            "ORDER BY po.purchase_date DESC")
+    List<Map<String, Object>> selectPendingDispatchOrders();
+
+    // 供应商发货：把采购单状态改成 2 (运输中)
+    @Update("UPDATE purchase_order SET status = 2, update_time = NOW() WHERE id = #{orderId}")
+    int dispatchOrder(Long orderId);
 }

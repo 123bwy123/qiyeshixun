@@ -32,4 +32,18 @@ public class StationServiceImpl implements StationService {
 
         return Result.success("任务已下发至配送员终端！包裹进入【派送中】状态。");
     }
+    @Override
+    public Result getPendingCloseTasks() {
+        return Result.success(taskOrderMapper.selectPendingCloseTasks());
+    }
+
+    @Override
+    @Transactional // 终极操作：同时完结任务单和主订单！
+    public Result closeOrder(Long taskId, Long orderId) {
+        // 1. 任务单完结
+        taskOrderMapper.closeTaskStatus(taskId);
+        // 2. 主订单完结 (迎来大结局状态 7)
+        customerOrderMapper.updateStatusToFinished(orderId);
+        return Result.success("入账成功！该包裹已彻底完结！");
+    }
 }

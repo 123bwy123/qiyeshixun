@@ -1,9 +1,14 @@
 package com.itheima.qiyeshixun.mapper;
 
+import com.itheima.qiyeshixun.dto.PurchaseOrderEntity;
 import com.itheima.qiyeshixun.po.PurchaseOrder;
 import com.itheima.qiyeshixun.po.PurchaseOrderExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface PurchaseOrderMapper {
     /**
@@ -93,4 +98,24 @@ public interface PurchaseOrderMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(PurchaseOrder row);
+
+    // 1. 根据商品ID查询它所属的供应商ID (从 product 表查)
+    @Select("SELECT supplier_id FROM product WHERE id = #{productId}")
+    Long getSupplierIdByProduct(Long productId);
+
+    // 2. 插入采购单主表 (使用你提供的字段名)
+    @Insert("INSERT INTO purchase_order (purchase_no, supplier_id, delivery_admin_id, purchase_date, total_amount, status) " +
+            "VALUES (#{purchaseNo}, #{supplierId}, #{deliveryAdminId}, NOW(), #{totalAmount}, 1)")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insertPurchaseOrder(PurchaseOrderEntity order);
+
+    // 【新增】：向采购明细表插入数据，记录到底买了啥
+    @Insert("INSERT INTO purchase_item (purchase_id, product_id, purchase_quantity, actual_quantity, unit_price, amount) " +
+            "VALUES (#{purchaseId}, #{productId}, #{quantity}, 0, #{unitPrice}, #{amount})")
+    int insertPurchaseItem(@org.apache.ibatis.annotations.Param("purchaseId") Long purchaseId,
+                           @org.apache.ibatis.annotations.Param("productId") Long productId,
+                           @org.apache.ibatis.annotations.Param("quantity") Integer quantity,
+                           @org.apache.ibatis.annotations.Param("unitPrice") Double unitPrice,
+                           @org.apache.ibatis.annotations.Param("amount") Double amount);
 }
+

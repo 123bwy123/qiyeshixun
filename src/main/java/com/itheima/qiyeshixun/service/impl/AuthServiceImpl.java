@@ -33,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
             case "station_admin": return 5;    // 分站管理员
             case "center_admin": return 6;     // 配送中心管理员
             case "finance_admin": return 7;    // 财务中心管理员
+            case "supplier": return 9;        // 供应商厂家
             default: return -1;
         }
     }

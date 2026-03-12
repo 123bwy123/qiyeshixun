@@ -3,7 +3,10 @@ package com.itheima.qiyeshixun.mapper;
 import com.itheima.qiyeshixun.po.Inventory;
 import com.itheima.qiyeshixun.po.InventoryExample;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface InventoryMapper {
     /**
@@ -93,4 +96,14 @@ public interface InventoryMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Inventory row);
+
+    // 联表查询库存，并智能计算是否处于“预警状态” (补上了 p.id as productId)
+    @Select("SELECT i.id as inventoryId, p.id as productId, p.product_name as productName, p.price as unitPrice, " +
+            "i.stock_quantity as stockQuantity, i.warning_level as warningLevel, " +
+            "(CASE WHEN i.stock_quantity <= i.warning_level THEN 1 ELSE 0 END) as isWarning " +
+            "FROM inventory i " +
+            "LEFT JOIN product p ON i.product_id = p.id " +
+            "WHERE i.del_flag = 0 " +
+            "ORDER BY isWarning DESC, i.stock_quantity ASC")
+    List<Map<String, Object>> selectInventoryWithWarning();
 }
