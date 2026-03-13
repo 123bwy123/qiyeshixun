@@ -147,7 +147,8 @@ public interface PurchaseOrderMapper {
         @Update("UPDATE purchase_item SET actual_quantity = #{actualQty} WHERE id = #{itemId}")
         int updatePurchaseItemActualQty(@Param("itemId") Long itemId, @Param("actualQty") Integer actualQty);
 
-        // 4. 入库确认：更新主表状态为已入库(2)并记录完成时间
-        @Update("UPDATE purchase_order SET status = 2, finish_time = NOW() WHERE id = #{purchaseId}")
+        // 4. 入库确认：更新主表状态为已入库(3)并记录完成时间
+        // 状态机：1=待发货 -> 2=在途运输中(供应商发货) -> 3=已入库(中心库房收货)
+        @Update("UPDATE purchase_order SET status = 3, finish_time = NOW() WHERE id = #{purchaseId}")
         int completePurchaseOrder(@Param("purchaseId") Long purchaseId);
 }

@@ -292,7 +292,7 @@ public interface TaskOrderMapper {
                         "JOIN system_user u ON t.courier_id = u.id " +
                         "JOIN order_item oi ON co.id = oi.order_id " +
                         "JOIN product p ON oi.product_id = p.id " +
-                        "WHERE co.order_status = 4 AND t.task_status = 1 AND t.del_flag = 0 " +
+                        "WHERE co.order_status = 5 AND t.task_status = 1 AND t.del_flag = 0 " +
                         "<if test='stationId != null'>AND t.station_id = #{stationId}</if> " +
                         "<if test='taskNo != null and taskNo != \"\"'>AND t.task_no LIKE CONCAT('%', #{taskNo}, '%') </if>" +
                         "ORDER BY t.create_time DESC " +

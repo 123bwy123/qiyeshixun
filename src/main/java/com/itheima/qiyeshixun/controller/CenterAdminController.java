@@ -33,29 +33,38 @@ public class CenterAdminController {
         Double unitPrice = Double.valueOf(params.get("unitPrice").toString());
         Long adminId = Long.valueOf(params.get("adminId").toString());
 
-        // 1. 找到该商品对应的供应商
-        Long supplierId = purchaseOrderMapper.getSupplierIdByProduct(productId);
-
-        // 2. 模拟采购数量（比如一次性补货 50 件）
-        int quantity = 50;
+        // 【Bug1 修复】从前端接收真实采购数量，严禁硬编码兜底
+        if (params.get("quantity") == null) {
+            return Result.error("采购失败：采购数量不能为空！");
+        }
+        int quantity = Integer.parseInt(params.get("quantity").toString());
+        if (quantity <= 0) {
+            return Result.error("采购失败：采购数量必须大于 0！");
+        }
         Double totalAmount = unitPrice * quantity;
 
-        // 3. 生成采购单号 (CG + 时间戳)
+        // 1. 找到该商品对应的供应商
+        Long supplierId = purchaseOrderMapper.getSupplierIdByProduct(productId);
+        if (supplierId == null) {
+            return Result.error("采购失败：该商品未关联有效供应商！");
+        }
+
+        // 2. 生成采购单号 (CG + 时间戳)
         String purchaseNo = "CG" + System.currentTimeMillis();
 
-        // 4. 执行插入
+        // 3. 执行插入主表 (初始 status=1，代表「待供应商发货」)
         PurchaseOrderEntity order = new PurchaseOrderEntity();
         order.purchaseNo = purchaseNo;
-        order.supplierId = supplierId; // 注意这里换成驼峰命名 supplierId，和你新建的类保持一致
+        order.supplierId = supplierId;
         order.deliveryAdminId = adminId;
         order.totalAmount = totalAmount;
 
         purchaseOrderMapper.insertPurchaseOrder(order);
 
-        // 【核心修复】：主订单生成后，立刻把50台洗衣机写进明细表！死死绑定！
-        // 注意：因为上面配置了 useGeneratedKeys = true，所以此时 order.id 已经拿到了数据库自动生成的 ID
+        // 4. 插入采购明细，使用前端传入的真实数量
+        // 注意：useGeneratedKeys=true，order.id 已获得数据库自增 ID
         purchaseOrderMapper.insertPurchaseItem(order.id, productId, quantity, unitPrice, totalAmount);
 
-        return Result.success("采购单 [" + purchaseNo + "] 已下达到供应商，待对方发货！");
+        return Result.success("采购单 [" + purchaseNo + "] 已下达，共采购 " + quantity + " 件，待供应商发货！");
     }
 }
